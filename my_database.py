@@ -2,7 +2,10 @@ import sqlite3
 from sqlite3 import Error
 
 def create_connection(db_file):
-    ''' create a database connection to a SQLite database '''
+    ''' Create a database connection to the SQLite database scpecified by db_file
+    :param db_file: database file
+    :return: Connection object or None 
+     '''
     conn = None
     try:
         conn = sqlite3.connect(db_file)
