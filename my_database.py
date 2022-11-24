@@ -27,6 +27,20 @@ def execute_sql(conn, sql): # sql - tekst, kod sql, który jest podany do zmienn
     except Error as e:
         print(e)
 
+def add_subject(conn, subject): 
+    """
+    Create a new project into the subjects table
+    :param conn:
+    :param subject: subject name
+    :return: subject id
+    """
+    sql = '''INSERT INTO subjects(name_subject, teacher)
+                VALUES(?,?)'''
+    cur = conn.cursor()
+    cur.execute(sql, subject)
+    conn.commit()
+    print("Added")
+
 if __name__ == '__main__':
     
     create_subjects_sql = """
@@ -52,3 +66,8 @@ if __name__ == '__main__':
         execute_sql(conn,create_subjects_sql)
         execute_sql(conn,create_students_sql)
         conn.close()
+
+    conn = create_connection("my_database.db")
+
+    subject = ("Geaografia", "W. O'Conor")
+    add_subject(conn, subject) # wywołuję funkcję add_subject
