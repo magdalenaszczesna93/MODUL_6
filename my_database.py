@@ -75,6 +75,20 @@ def select_students_by_grade(conn, subject_grade, subject_id):
     rows = cur.fetchall()
     return rows
 
+def select_where(conn, table, **query):
+    """ Query subject from table with data from **query dict :param conn: :param table: table name 
+    :param query: dict of attributes and values :return: """
+    cur = conn.cursor()
+    qs = []
+    values = ()
+    for a, v in query.items():
+        qs.append(f"{a}=?")
+        values +=(v, )
+    q = "AND".join(qs)
+    cur.execute(f"SELECT * FROM {table} WHERE {q}", values)
+    rows = cur.fetchall()
+    return rows
+
 
 if __name__ == '__main__':
     # wykonano
@@ -128,3 +142,7 @@ if __name__ == '__main__':
     print(cur.fetchone())
     
     print(select_students_by_grade(conn, 5, 1))
+
+    query = {"name_subject":"Matematyka"}
+    print(select_where(conn, "subjects", **query))
+    print(select_where(conn, "subjects", teacher="D. Kodar"))
