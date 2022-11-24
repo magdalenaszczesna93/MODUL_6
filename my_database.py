@@ -103,9 +103,26 @@ def update(conn, table, id, **kwargs):
         cur = conn.cursor()
         cur.execute(sql, values)
         conn.commit()
-        print("Updated")
+        return f"Updated"
     except sqlite3.OperationalError as e:
         print(e)
+
+def delete_where(conn, table, **kwargs):
+    """ Delete from table where attributes from :param conn: :param table: table name
+    :param kwargs: dict of attributes and values
+    :return: """
+    qs = []
+    values = tuple()
+    for a, v in kwargs.items():
+        qs.append(f"{a}=?")
+        values += (v, )
+    q = "AND".join(qs)
+    sql = f"DELETE FROM {table} WHERE {q}"
+    cur = conn.cursor()
+    cur.execute(sql, values)
+    conn.commit()
+    return f"Deleted"
+
 
 if __name__ == '__main__':
     # wykonano
@@ -166,6 +183,8 @@ if __name__ == '__main__':
     print(select_where(conn, "subjects", teacher="D. Kodar"))
 
     print(update(conn, "subjects", 5, teacher = "D. Kodar"))
+
+    print(delete_where(conn, "students", subject_grade = 3))
 
     conn.close()
 
