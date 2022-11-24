@@ -58,6 +58,24 @@ def add_student(conn, student):
     conn.commit()
     print("Added")
 
+    # pobieranie wszytskiego z subjects
+def select_all(conn, table):
+    """ Query all rows in the table :param conn: the Connection object :return: """
+    cur = conn.cursor()
+    cur.execute(f"SELECT * FROM {table}")
+    rows = cur.fetchall()
+    return rows
+
+    # wyszukuje po subject grade and subject id
+def select_students_by_grade(conn, subject_grade, subject_id):
+    """ Query sudents by subject_grade :param conn: the Connection opbject :param subject_grade: subject_grade 
+    :param subject_id: subject_id :return: """
+    cur = conn.cursor()
+    cur.execute(f"SELECT * FROM students WHERE subject_grade=? AND subject_id=?",(subject_grade,subject_id))
+    rows = cur.fetchall()
+    return rows
+
+
 if __name__ == '__main__':
     # wykonano
     # Tworzę połączenie z bazą, chyba że nie istneije to tworzy z podaną nazwą
@@ -95,5 +113,18 @@ if __name__ == '__main__':
     # subject = ("Geaografia", "W. O'Conor")
     # add_subject(conn, subject) # wywołuję funkcję add_subject
 
-    student = (6, "Eric", "Goldman", 2, 5)
-    add_student(conn, student) # wywołuję funkcję add_student
+    # wykonano
+    # student = (6, "Eric", "Goldman", 2, 5)
+    # add_student(conn, student) # wywołuję funkcję add_student
+
+    # pobiera wszytsko z sebject
+    print(select_all(conn, "subjects"))
+
+    # pobiera po kolei ze students
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM students")
+    print(cur.fetchone())
+    print(cur.fetchone())
+    print(cur.fetchone())
+    
+    print(select_students_by_grade(conn, 5, 1))
