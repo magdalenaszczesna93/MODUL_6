@@ -89,6 +89,23 @@ def select_where(conn, table, **query):
     rows = cur.fetchall()
     return rows
 
+def update(conn, table, id, **kwargs):
+    """ Update name_subject and teacher of a subjects :param conn:
+    :param table: table name :param id: row id :return: """
+    parameters = [f"{k} = ?" for k in kwargs]
+    parameters = ", ".join(parameters)
+    values = tuple(v for v in kwargs.values())
+    values += (id, )
+    sql = f"""UPDATE {table}
+                SET {parameters}
+                WHERE id = ?"""
+    try:
+        cur = conn.cursor()
+        cur.execute(sql, values)
+        conn.commit()
+        print("Updated")
+    except sqlite3.OperationalError as e:
+        print(e)
 
 if __name__ == '__main__':
     # wykonano
@@ -145,4 +162,11 @@ if __name__ == '__main__':
 
     query = {"name_subject":"Matematyka"}
     print(select_where(conn, "subjects", **query))
+    # lub inaczej:
     print(select_where(conn, "subjects", teacher="D. Kodar"))
+
+    print(update(conn, "subjects", 5, teacher = "D. Kodar"))
+
+    conn.close()
+
+
