@@ -15,6 +15,7 @@ def create_connection(db_file):
     except Error as e:
         print(e)
     return conn
+    
 
 def execute_sql(conn, sql): # sql - tekst, kod sql, który jest podany do zmiennej 
     #przekzanej do funkcji
