@@ -12,9 +12,43 @@ def create_connection(db_file):
         print(f'Connected to {db_file}, sqlite version: {sqlite3.version}')
     except Error as e:
         print(e)
-    finally:
-        if conn:
-            conn.close()
+    return conn
+
+def execute_sql(conn, sql): # sql - tekst, kod sql, który jest podany do zmiennej 
+    #przekzanej do funkcji
+    ''' Execute sql
+    :param conn: Connection object
+    :param sql: a Sql script
+    :return:
+    '''
+    try:
+        c = conn.cursor() 
+        c.execute(sql)
+    except Error as e:
+        print(e)
 
 if __name__ == '__main__':
-    create_connection(r"my_database.db")
+    
+    create_subjects_sql = """
+    -- subject table
+    CREATE TABLE IF NOT EXISTS subjects (
+        id INTEGER PRIMARY KEY,
+        name_subject VARCHAR(50) NOT NULL,
+        teacher TEXT);
+    """   
+    create_students_sql = """
+    -- student table
+    CREATE TABLE IF NOT EXISTS students (
+        id INTEGER PRIMARY KEY,
+        subject_id INTEGER NOT NULL,
+        name VARCHAR(50) NOT NULL,
+        surname VARCHAR(50) NOT NULL,
+        year_of_study INTEGER NOT NULL,
+        subject_grade FLOAT NOT NULL,
+        FOREIGN KEY (subject_id) REFERENCES subjects (id));
+    """
+    conn = create_connection("my_database.db")
+    if conn is not None:
+        execute_sql(conn,create_subjects_sql)
+        execute_sql(conn,create_students_sql)
+        conn.close()
