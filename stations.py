@@ -4,19 +4,17 @@ from sqlalchemy import create_engine
 
 data_s = pd.read_csv (r'C:\Users\magda\modul_6\clean_stations.csv')   
 df_s = pd.DataFrame(data_s)
-print(df_s)
 
 data_m = pd.read_csv (r'C:\Users\magda\modul_6\clean_measure.csv')   
 df_m = pd.DataFrame(data_m)
-print(df_m)
+
+# create connection between two DB
+station_together = pd.merge(df_s, df_m, on='station', how='outer')
 
 #create engine and connect to DB
 engine = create_engine(r"sqlite:///stations_data.db")
 
 meta = MetaData()
-
-# stations: station- string,latitude-float,longitude-float,elevation-float,name-string,country-string,state-string
-# measure: station- string,date-datetime.date,precip-float,tobs-int
 
 station = Table(
     "stations", meta,
@@ -54,9 +52,6 @@ stations_all_data = Table(
 
 meta.create_all(engine)
 print(engine.table_names())
-
-station_together = pd.merge(df_s, df_m, on='station', how='outer')
-print(station_together)
 
 conn = engine.connect() 
 df_s.to_sql('stations', conn, if_exists='append',index=False)
