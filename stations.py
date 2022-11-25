@@ -20,7 +20,7 @@ meta = MetaData()
 
 station = Table(
     "stations", meta,
-    Column("station", String, primary_key=True),
+    Column("station", String),
     Column("latitude", Float),
     Column("longitude", Float),
     Column("elevation", Float),
@@ -29,8 +29,23 @@ station = Table(
     Column("state", String),
 )
 
-mesure = Table(
+measure = Table(
     "measures", meta,
+    Column("station", String),
+    Column("date", DateTime),
+    Column("precip", Float),
+    Column("tobs", Integer),
+)
+
+stations_all_data = Table(
+    "stations_all_data", meta,
+    Column("station", String),
+    Column("latitude", Float),
+    Column("longitude", Float),
+    Column("elevation", Float),
+    Column("name", String),
+    Column("country", String),
+    Column("state", String),
     Column("station", String),
     Column("date", DateTime),
     Column("precip", Float),
@@ -40,3 +55,10 @@ mesure = Table(
 meta.create_all(engine)
 print(engine.table_names())
 
+station_together = pd.merge(df_s, df_m, on='station', how='outer')
+print(station_together)
+
+conn = engine.connect() 
+df_s.to_sql('stations', conn, if_exists='append',index=False)
+df_m.to_sql('measures', conn, if_exists='append',index=False)
+station_together.to_sql('stations_all_data', conn, if_exists='append',index=False)
